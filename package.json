@@ -1,0 +1,15 @@
+{
+
+    "name": "cryfi-cmart-contracts",
+    "version": "1.0.0",
+    "description": "deploy Smart Contracts for CRYFI Project Using truffle ",
+    "main": "index.js",
+    "repository": "https://github.com/Matarwy/CryFi-Smart-Contracts.git",
+    "author": "Alhassan Matarwy <67296782+Matarwy@users.noreply.github.com>",
+    "license": "MIT",
+
+
+    "devDependencies": {
+        "truffle-plugin-verify": "^0.5.26"
+    }
+}
