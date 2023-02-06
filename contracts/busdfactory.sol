@@ -1,22 +1,25 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
-/////////////////////////////////////////////////////////////////////////////////////
-//                                                                                 //
-//                 /////  ///      ////  ///       ///  ////////////  ///          //
-//              ////      ///    ///       ///    ///   ///           ///          //
-//            ////        ///  ///           /// ///    ///                        //
-//          ////          //////              /////     ////////      ///          // 
-//          ////          ///                  ///      ///           ///          //
-//           ////         ///                 ///       ///           ///          //
-//             ////       ///                ///        ///           ///          //
-//               /////    ///               ///         ///           ///          //
-//                                                                                 //
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-/**
+////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                        //
+//       ////////////////////        ///////////////////             //////////////////   //
+//       /////////////////////       ////////////////////            //////////////////   //
+//       //                  //      //                 //           //                   //
+//       //                  //      //                  //          //                   //
+//       //                  //      //                   //         //                   //
+//       //                 //       //                     //       //                   //
+//       //                //        //                      //      //////////           //
+//       ///////////////////         //                      //      //                   //
+//       //               //         //                     //       //                   //
+//       //                 //       //                    //        //                   //
+//       //                  //      //                   //         //                   //
+//       //                  //      //                  //          //                   //
+//       //                 //       //                 //           //                   //
+//       ////////////////////        ////////////////////            //                   //
+//       //////////////////          //////////////////              //                   //
+////////////////////////////////////////////////////////////////////////////////////////////
+/*
  * SAFEMATH LIBRARY
  */
 library SafeMath {
@@ -474,7 +477,7 @@ contract DividendDistributor is IDividendDistributor{
 
 }
 
-contract CryFiToken is IBEP20, Auth {
+contract BUSDFactory is IBEP20, Auth {
     using SafeMath for uint256;
 
     uint256 public constant MASK = type(uint128).max;
@@ -484,8 +487,8 @@ contract CryFiToken is IBEP20, Auth {
     address ZERO = 0x0000000000000000000000000000000000000000;
     address DEAD_NON_CHECKSUM = 0x000000000000000000000000000000000000dEaD;
 
-    string constant _name = "CryFi Earn";
-    string constant _symbol = "CRYFI";
+    string constant _name = "BUSD Factory";
+    string constant _symbol = "BDF";
     uint8 constant _decimals = 9;
 
     uint256 _totalSupply = 1_000_000_000_000_000 * (10 ** _decimals);
@@ -523,7 +526,6 @@ contract CryFiToken is IBEP20, Auth {
     uint256 buybackMultiplierLength = 30 minutes;
 
     bool public autoBuybackEnabled = false;
-    mapping (address => bool) buyBacker;
     uint256 autoBuybackCap;
     uint256 autoBuybackAccumulator;
     uint256 autoBuybackAmount;
@@ -555,7 +557,6 @@ contract CryFiToken is IBEP20, Auth {
         isDividendExempt[pair] = true;
         isDividendExempt[address(this)] = true;
         isDividendExempt[DEAD] = true;
-        buyBacker[msg.sender] = true;
 
         autoLiquidityReceiver = msg.sender;
         marketingFeeReceiver = msg.sender;
@@ -573,7 +574,6 @@ contract CryFiToken is IBEP20, Auth {
     function symbol() external pure override returns (string memory) { return _symbol; }
     function name() external pure override returns (string memory) { return _name; }
     function getOwner() external view override returns (address) { return owner; }
-    modifier onlyBuybacker() { require(buyBacker[msg.sender] == true, ""); _; }
     function balanceOf(address account) public view override returns (uint256) { return _balances[account]; }
     function allowance(address holder, address spender) external view override returns (uint256) { return _allowances[holder][spender]; }
 
@@ -603,12 +603,8 @@ contract CryFiToken is IBEP20, Auth {
         if(inSwap){ return _basicTransfer(sender, recipient, amount); }
 
         checkTxLimit(sender, amount);
-        //
         if(shouldSwapBack()){ swapBack(); }
         if(shouldAutoBuyback()){ triggerAutoBuyback(); }
-
-        //        if(!launched() && recipient == pair){ require(_balances[sender] > 0); launch(); }
-
         _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
 
         uint256 amountReceived = shouldTakeFee(sender) ? takeFee(sender, recipient, amount) : amount;
