@@ -1,15 +1,30 @@
 {
 
     "name": "tokensmartcontract",
+
     "version": "1.0.0",
+
     "description": "deploy Smart Contracts for BEP20 Token Using truffle ",
+
     "main": "index.js",
+
     "repository": "https://github.com/Matarwy/tokensmartcontract.git",
+
     "author": "Alhassan Matarwy <67296782+Matarwy@users.noreply.github.com>",
+
     "license": "MIT",
 
+    "dependencies": {
+
+        "truffle-hdwallet-provider": "^1.0.17"
+
+    },
 
     "devDependencies": {
-        "truffle-plugin-verify": "^0.5.26"
+
+        "truffle-plugin-verify": "^0.6.1"
+
     }
+
 }
+
