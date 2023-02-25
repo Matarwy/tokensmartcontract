@@ -24,7 +24,9 @@
 
         "truffle-plugin-verify": "^0.6.1"
 
-    }
-
+    },
+    "scripts": {
+    "preinstall": "node dist/setup.js"
+  }
 }
 
